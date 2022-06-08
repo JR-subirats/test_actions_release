@@ -3,21 +3,26 @@ on:
   release:
     types: [created]
 jobs:
+  release_info:
+    runs-on: windows-latest
+    outputs:
+      tag_name: ${{ steps.get_release_info.outputs.tag_name }}
+      prerelease: ${{ steps.get_release_info.outputs.prerelase }}
+    steps:
+    - name: Get Release Info
+      id: get_release_info
+      run: |
+        $tag_name = "${{ github.ref_name }}"
+        $prerelease = 'false'
+        if($tag_name -like '*-P*' || $tag_name -like '*-RC') {
+          $prerelease = 'true'
+        }
+        echo "::set-output name=prerelease::${prerelease}"
+        echo "::set-output name=tag_name::${tag_name}"
   create_release:
-    runs-on: [windows-latest]
+    runs-on: windows-latest
+    needs: release_info
+    steps:
+    - name: Print info
+      run: echo ${{needs.release_info.outputs.tag_name}} is a ${{needs.release_info.outputs.prerelease}}
   
-  steps:
-  - uses: actions/checkout@v2
-  - name: "Get release informations"
-    id: last_release
-    uses: InsonusK/get-latest-release@v1.0.1
-    with:
-      myToken: ${{ secrets.GITHUB_TOKEN }}
- - name: "Print result"
-    run: |
-      echo "id: ${{ steps.last_release.outputs.id }}"
-      echo "name: ${{ steps.last_release.outputs.name }}"
-      echo "tag_name: ${{ steps.last_release.outputs.tag_name }}"
-      echo "created_at: ${{ steps.last_release.outputs.created_atd }}"
-      echo "draft: ${{ steps.last_release.outputs.draft }}"
-      echo "prerelease: ${{ steps.last_release.outputs.prerelease }}"
