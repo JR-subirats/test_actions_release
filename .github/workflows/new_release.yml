@@ -18,9 +18,9 @@ jobs:
       id: get_prerelease
       run: |
         $tag_name = "${{ github.ref_name }}"
-        $prerelease = 'false'
+        $prerelease = 'Pepito'
         if($tag_name -like '*-auto' || $tag_name -like '*-RC') {
-          $prerelease = 'true'
+          $prerelease = 'Juanito'
         }
         echo "::set-output name=prerelease::${prerelease}"
   create_release:
