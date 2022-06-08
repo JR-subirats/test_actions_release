@@ -28,4 +28,4 @@ jobs:
     needs: release_info
     steps:
     - name: Print info
-      run: echo ${{needs.release_info.outputs.tag_name}} is a ${{needs.release_info.outputs.prerelease}}
+      run: echo "${{needs.release_info.outputs.tag_name}} is a ${{needs.release_info.outputs.prerelease}}"
