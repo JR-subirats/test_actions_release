@@ -7,7 +7,7 @@ jobs:
     runs-on: windows-latest
     outputs:
       tag_name: ${{ steps.get_tag_name.outputs.tag_name }}
-      prerelease: ${{ steps.get_prerelease.outputs.prerelase }}
+      is_prerelease: ${{ steps.get_prerelease.outputs.is_prerelease }}
     steps:
     - name: Get Tag Name
       id: get_tag_name
@@ -18,14 +18,14 @@ jobs:
       id: get_prerelease
       run: |
         $tag_name = "${{ github.ref_name }}"
-        $prerelease = 'Pepito'
+        $is_prerelease = 'Pepito'
         if($tag_name -like '*-auto' || $tag_name -like '*-RC') {
-          $prerelease = 'Juanito'
+          $is_prerelease = 'Juanito'
         }
-        echo "::set-output name=prerelease::${prerelease}"
+        echo "::set-output name=is_prerelease::${is_prerelease}"
   create_release:
     runs-on: windows-latest
     needs: release_info
     steps:
     - name: Print info
-      run: echo "${{needs.release_info.outputs.tag_name}} is a ${{needs.release_info.outputs.prerelease}}"
+      run: echo "${{needs.release_info.outputs.tag_name}} is a ${{needs.release_info.outputs.is_prerelease}}"
